@@ -8,7 +8,9 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import com.krllus.bitmappoc.ui.theme.BitmapPOCTheme
 
 class MainActivity : ComponentActivity() {
@@ -16,10 +18,30 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
+
+            val ctx = LocalContext.current
+            val coroutineScope = rememberCoroutineScope()
+
             BitmapPOCTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Box(modifier = Modifier.padding(innerPadding))
-                    BitmapFromComposableFullSnippet()
+                    Box(modifier = Modifier.padding(innerPadding)) {
+
+                        Something()
+
+//                        BitmapFromComposableFullSnippet()
+
+//                        BitmapComposable(
+//                            onBitmapped = { bitmap ->
+//                                coroutineScope.launch {
+//                                    bitmap.saveToDisk(ctx)
+//                                    println("bitmap saved to disk")
+//                                }
+//                            },
+//                            intSize = IntSize(500, 700)
+//                        ) {
+//                            ScreenContentToCapture()
+//                        }
+                    }
                 }
             }
         }
