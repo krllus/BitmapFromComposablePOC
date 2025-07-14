@@ -35,7 +35,7 @@ class MainActivity : ComponentActivity() {
                         BitmapComposable(
                             onBitmapped = { bitmap ->
                                 coroutineScope.launch {
-                                    bitmap.saveToDisk(ctx)
+                                    bitmap?.saveToDisk(ctx)
                                     println("bitmap saved to disk")
                                 }
                             },
