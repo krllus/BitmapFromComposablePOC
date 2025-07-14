@@ -72,7 +72,7 @@ fun Something() {
     }
 }
 
-private fun createBitmapFromPicture(picture: Picture): Bitmap {
+fun createBitmapFromPicture(picture: Picture): Bitmap {
     val bitmap = createBitmap(picture.width, picture.height)
 
     val canvas = android.graphics.Canvas(bitmap)

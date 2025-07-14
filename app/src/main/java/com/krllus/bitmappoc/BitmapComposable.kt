@@ -1,21 +1,22 @@
 package com.krllus.bitmappoc
 
+import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
-import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.unit.DpSize
-import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.toSize
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.graphics.applyCanvas
 import androidx.core.view.doOnLayout
 import androidx.core.view.drawToBitmap
 
@@ -25,8 +26,7 @@ import androidx.core.view.drawToBitmap
 fun BitmapComposable(
     onBitmapped: (bitmap: Bitmap) -> Unit = { _ -> },
     backgroundColor: Color = Color.Transparent,
-    dpSize: DpSize,
-    composable: @Composable () -> Unit
+    composable: @Composable () -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -39,34 +39,49 @@ fun BitmapComposable(
             )
     ) {
 
-        Box(modifier = Modifier.size(dpSize)) {
-            AndroidView(factory = {
-                ComposeView(it).apply {
+        AndroidView(
+            modifier = Modifier.fillMaxSize(),
+            factory = { context ->
+                ComposeView(context).apply {
                     setContent {
-                        Box(modifier = Modifier.background(backgroundColor).fillMaxSize()) {
+                        Box(
+                            modifier = Modifier
+                                .background(backgroundColor)
+                                .fillMaxSize()
+                        ) {
                             composable()
                         }
                     }
                 }
-            }, modifier = Modifier.fillMaxSize(), update = {
-                it.run {
+            },
+            update = { view ->
+                view.run {
                     doOnLayout {
-                        onBitmapped(drawToBitmap())
+                        println("onLayout")
+                        val width = view.width
+                        val height = view.height
+                        println("view width:$width, height:$height")
+
+                        onBitmapped(generateBitmapFromViewWithoutCheckoutIfLaidOut())
+
+//                        if (view.isLaidOut) {
+//                            onBitmapped(drawToBitmap())
+//                        }
                     }
                 }
-            })
-        }
+            }
+        )
     }
 
 }
 
-@Composable
-fun BitmapComposable(
-    onBitmapped: (bitmap: Bitmap) -> Unit = { _ -> },
-    backgroundColor: Color = Color.Transparent,
-    intSize: IntSize, // Pixel size for output bitmap
-    composable: @Composable () -> Unit
-) {
-    val renderComposableSize = LocalDensity.current.run { intSize.toSize().toDpSize() }
-    BitmapComposable(onBitmapped, backgroundColor, renderComposableSize, composable)
+@SuppressLint("UseKtx")
+private fun ComposeView.generateBitmapFromViewWithoutCheckoutIfLaidOut(
+    config: Bitmap.Config = Bitmap.Config.ARGB_8888
+): Bitmap {
+    return Bitmap.createBitmap(width, height, config)
+        .applyCanvas {
+            translate(-scrollX.toFloat(), -scrollY.toFloat())
+            draw(this)
+        }
 }
