@@ -1,4 +1,4 @@
-package com.krllus.bitmappoc
+package com.krllus.bfc
 
 import android.annotation.SuppressLint
 import android.graphics.Bitmap
@@ -19,10 +19,10 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.graphics.applyCanvas
 import androidx.core.view.doOnLayout
 
-// https://stackoverflow.com/a/74814850
+// strong based in https://stackoverflow.com/a/74814850
 
 @Composable
-fun BitmapComposable(
+fun BitmapFromComposable(
     onBitmapped: (bitmap: Bitmap?) -> Unit = { _ -> },
     backgroundColor: Color = Color.Transparent,
     composable: @Composable () -> Unit,
@@ -56,22 +56,12 @@ fun BitmapComposable(
             update = { view ->
                 view.run {
                     doOnLayout {
-                        println("onLayout")
-                        val width = view.width
-                        val height = view.height
-                        println("view width:$width, height:$height")
-
                         onBitmapped(generateBitmapFromViewWithoutCheckoutIfLaidOut())
-
-//                        if (view.isLaidOut) {
-//                            onBitmapped(drawToBitmap())
-//                        }
                     }
                 }
             }
         )
     }
-
 }
 
 @SuppressLint("UseKtx")

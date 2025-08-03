@@ -21,4 +21,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "BitmapPOC"
 include(":app")
- 
+include(":bfc")
