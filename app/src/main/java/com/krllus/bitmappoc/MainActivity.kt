@@ -1,6 +1,5 @@
 package com.krllus.bitmappoc
 
-import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -18,13 +17,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import com.krllus.bfc.BitmapFromComposable
+import com.krllus.bfc.BitmapGenerator
 import com.krllus.bitmappoc.bucketlist.BucketScreen
 import com.krllus.bitmappoc.bucketlist.BucketViewModel
 import com.krllus.bitmappoc.bucketlist.ListItemRow
 import com.krllus.bitmappoc.bucketlist.data.BucketItem
 import com.krllus.bitmappoc.ui.theme.BitmapPOCTheme
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
@@ -45,7 +43,23 @@ class MainActivity : ComponentActivity() {
                             viewModel = bucketViewModel,
                             onDone = {
                                 val items = bucketViewModel.items
-                                GenerateBitmapFromItems(items, coroutineScope, ctx)
+                                println("Items to bitmap: ${items.size}")
+                                BitmapGenerator(context = ctx).generate(
+                                    onBitmapped = { bitmap ->
+                                        coroutineScope.launch {
+                                            bitmap?.let {
+                                                // Save the bitmap to disk or handle it as needed
+                                                // For example, you can save it to a file
+                                                // This is a placeholder for your save logic
+                                                println("Bitmap generated with ${items.size} items.")
+                                                it.saveToDisk(ctx)
+                                            } ?: run {
+                                                println("Bitmap generation failed.")
+                                            }
+                                        }
+                                    }) {
+                                    PrintLayoutForItems(items)
+                                }
                             }
                         )
                     }
@@ -55,25 +69,14 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-
 @Composable
-fun GenerateBitmapFromItems(
-    items: List<BucketItem>,
-    coroutineScope: CoroutineScope,
-    context: Context
+fun PrintLayoutForItems(
+    items: List<BucketItem>
 ) {
-    BitmapFromComposable(
-        onBitmapped = { bitmap ->
-            coroutineScope.launch {
-                bitmap?.saveToDisk(context)
-            }
-        },
-    ) {
-        LazyColumn(modifier = Modifier.fillMaxWidth()) {
-            items(items) { item ->
-                ListItemRow(item)
-                HorizontalDivider()
-            }
+    LazyColumn(modifier = Modifier.fillMaxWidth()) {
+        items(items) { item ->
+            ListItemRow(item)
+            HorizontalDivider()
         }
     }
 }
