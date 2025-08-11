@@ -1,6 +1,5 @@
 package com.krllus.bfc
 
-import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
@@ -18,11 +17,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.graphics.applyCanvas
 import androidx.core.view.doOnLayout
+import androidx.core.graphics.createBitmap
 
 // strong based in https://stackoverflow.com/a/74814850
 
 @Composable
-fun BitmapFromComposable(
+internal fun BitmapFromComposable(
     onBitmapped: (bitmap: Bitmap?) -> Unit = { _ -> },
     backgroundColor: Color = Color.Transparent,
     composable: @Composable () -> Unit,
@@ -64,13 +64,12 @@ fun BitmapFromComposable(
     }
 }
 
-@SuppressLint("UseKtx")
 private fun ComposeView.generateBitmapFromViewWithoutCheckoutIfLaidOut(
     config: Bitmap.Config = Bitmap.Config.ARGB_8888
 ): Bitmap? {
 
     return try {
-        Bitmap.createBitmap(width, height, config)
+        createBitmap(width, height, config)
             .applyCanvas {
                 translate(-scrollX.toFloat(), -scrollY.toFloat())
                 draw(this)
