@@ -31,7 +31,7 @@ import com.krllus.bitmappoc.bucketlist.data.BucketItem
 @Composable
 fun BucketScreen(
     viewModel: BucketViewModel,
-    onDone: @Composable () -> Unit = {}
+    onDone: () -> Unit = {}
 ) {
 
     var nameInput by remember { mutableStateOf("") }
