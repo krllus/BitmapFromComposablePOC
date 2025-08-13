@@ -10,7 +10,7 @@ android {
 
     defaultConfig {
         applicationId = "com.krllus.bitmappoc"
-        minSdk = 26
+        minSdk = 22
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
