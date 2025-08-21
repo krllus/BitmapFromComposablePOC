@@ -37,6 +37,9 @@ androidx-material3 = { group = "androidx.compose.material3", name = "material3" 
 accompanist-permissions = { group = "com.google.accompanist", name = "accompanist-permissions", version.ref = "accompanistVersion" }
 capturable = { group = "dev.shreyaspatil", name = "capturable", version.ref = "capturableVersion" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompatVersion" }
+koin-bom = { module = "io.insert-koin:koin-bom", version.ref = "koin" }
+koin-core = { module = "io.insert-koin:koin-core" }
+koin-android = { module = "io.insert-koin:koin-android" }
 material = { group = "com.google.android.material", name = "material", version.ref = "materialVersion" }
 androidx-foundation-android = { group = "androidx.compose.foundation", name = "foundation-android"}
 

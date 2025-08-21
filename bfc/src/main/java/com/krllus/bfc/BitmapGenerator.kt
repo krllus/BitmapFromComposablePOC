@@ -17,15 +17,29 @@ class BitmapGenerator(private val context: Context) {
         onBitmapped: (bitmap: Bitmap?) -> Unit,
         composable: @Composable () -> Unit,
     ) {
-        ComposeView(context).apply {
-            setContent {
-                BitmapFromComposable(
-                    onBitmapped = onBitmapped,
-                    composable = composable
-                )
+
+        runBlocking {
+            val composeView = ComposeView(context)
+
+            val recomposer = Recomposer(coroutineContext)
+            composeView.compositionContext = recomposer
+
+            val recomposerJob = launch { recomposer.runRecomposeAndApplyChanges() }
+
+            try{
+                composeView.setContent {
+                    BitmapFromComposable(
+                        onBitmapped = onBitmapped,
+                        composable = composable
+                    )
+                }
+
+                recomposer.awaitIdle()
+            } finally {
+                recomposer.close()
+                recomposerJob.cancel()
             }
         }
-
     }
 
 

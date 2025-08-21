@@ -27,41 +27,29 @@ internal fun BitmapFromComposable(
     backgroundColor: Color = Color.Transparent,
     composable: @Composable () -> Unit,
 ) {
-    Column(
-        modifier = Modifier
-            .size(0.dp, 0.dp)
-            .verticalScroll(
-                rememberScrollState(), enabled = false
-            )
-            .horizontalScroll(
-                rememberScrollState(), enabled = false
-            )
-    ) {
-
-        AndroidView(
-            modifier = Modifier.fillMaxSize(),
-            factory = { context ->
-                ComposeView(context).apply {
-                    setContent {
-                        Box(
-                            modifier = Modifier
-                                .background(backgroundColor)
-                                .fillMaxSize()
-                        ) {
-                            composable()
-                        }
-                    }
-                }
-            },
-            update = { view ->
-                view.run {
-                    doOnLayout {
-                        onBitmapped(generateBitmapFromViewWithoutCheckoutIfLaidOut())
+    AndroidView(
+        modifier = Modifier.fillMaxSize(),
+        factory = { context ->
+            ComposeView(context).apply {
+                setContent {
+                    Box(
+                        modifier = Modifier
+                            .background(backgroundColor)
+                            .fillMaxSize()
+                    ) {
+                        composable()
                     }
                 }
             }
-        )
-    }
+        },
+        update = { view ->
+            view.run {
+                doOnLayout {
+                    onBitmapped(generateBitmapFromViewWithoutCheckoutIfLaidOut())
+                }
+            }
+        }
+    )
 }
 
 private fun ComposeView.generateBitmapFromViewWithoutCheckoutIfLaidOut(
